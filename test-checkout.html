@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkout Redirect</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 50px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #06D6A0, #08E1AC);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            transform: translateY(-3px);
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Checkout Redirect</h1>
+        
+        <div class="info">
+            <h3>ข้อมูลทดสอบ:</h3>
+            <p><strong>User:</strong> <span id="userInfo">-</span></p>
+            <p><strong>Cart Items:</strong> <span id="cartInfo">-</span></p>
+        </div>
+
+        <button onclick="setupTestData()">1. Setup Test Data</button>
+        <button onclick="testRedirect()">2. Test Redirect to Checkout</button>
+        <button onclick="directRedirect()">3. Direct Redirect (Force)</button>
+        <button onclick="checkLocalStorage()">4. Check LocalStorage</button>
+        
+        <div id="output" style="margin-top: 20px; padding: 20px; background: #e9ecef; border-radius: 10px; display: none;">
+            <h4>Output:</h4>
+            <pre id="outputText"></pre>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let cart = [];
+
+        function setupTestData() {
+            // Create test user
+            currentUser = {
+                name: 'Test User',
+                email: 'test@example.com',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=test'
+            };
+            
+            // Create test cart
+            cart = [
+                { id: 1, name: 'น้ำเปล่า', price: 10, emoji: '💧', quantity: 2 },
+                { id: 5, name: 'สตรอว์เบอร์รี่ปั่น', price: 45, emoji: '🍓', quantity: 1 }
+            ];
+            
+            // Save to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('checkoutCart', JSON.stringify(cart));
+            
+            // Update display
+            document.getElementById('userInfo').textContent = currentUser.name;
+            document.getElementById('cartInfo').textContent = cart.length + ' items';
+            
+            alert('✅ Test data created!');
+        }
+
+        function testRedirect() {
+            if (!currentUser || !cart || cart.length === 0) {
+                alert('⚠️ Please setup test data first (button 1)');
+                return;
+            }
+            
+            console.log('Redirecting...');
+            localStorage.setItem('checkoutCart', JSON.stringify(cart));
+            window.location.href = 'checkout.html';
+        }
+
+        function directRedirect() {
+            console.log('Direct redirect...');
+            window.location.href = 'checkout.html';
+        }
+
+        function checkLocalStorage() {
+            const savedCart = localStorage.getItem('checkoutCart');
+            const savedUser = localStorage.getItem('currentUser');
+            
+            const output = document.getElementById('output');
+            const outputText = document.getElementById('outputText');
+            
+            outputText.textContent = 
+                'CheckoutCart: ' + (savedCart || 'null') + '\n\n' +
+                'CurrentUser: ' + (savedUser || 'null');
+            
+            output.style.display = 'block';
+        }
+
+        // Load existing data on page load
+        window.addEventListener('load', function() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedCart = localStorage.getItem('checkoutCart');
+            
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('userInfo').textContent = currentUser.name;
+            }
+            
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                document.getElementById('cartInfo').textContent = cart.length + ' items';
+            }
+        });
+    </script>
+</body>
+</html>

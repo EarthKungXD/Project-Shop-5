@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Redirect</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <p>Click button to test redirect:</p>
+    <button onclick="testRedirect()">Test Redirect to Checkout</button>
+    
+    <script>
+        function testRedirect() {
+            console.log('Button clicked');
+            alert('Redirecting to checkout.html');
+            window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>

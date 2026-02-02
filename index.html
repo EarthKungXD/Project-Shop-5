@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshSip - ร้านน้ำและของว่างออนไลน์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/features.css">
+    <style>
+        /* Fix Modal Scrolling */
+        .modal {
+            overflow-y: auto;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+        
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+        }
+        
+        /* Scrollbar Styling */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🥤</span>
+                <span class="logo-text">FreshSip</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">หน้าแรก</a>
+                <a href="#products" class="nav-link">สินค้า</a>
+                <a href="#promotions" class="nav-link">โปรโมชั่น</a>
+                <a href="#about" class="nav-link">เกี่ยวกับเรา</a>
+                <a href="#contact" class="nav-link">ติดต่อ</a>
+            </div>
+            <!-- Search Bar -->
+            <div class="search-container">
+             <div class="search-input-wrapper">
+                 <span class="search-icon">🔍</span>
+                 <input type="text" id="searchInput" class="search-input" placeholder="ค้นหาสินค้า...">
+                 <button class="search-clear-btn hidden" id="searchClearBtn" onclick="document.getElementById('searchInput').value=''; document.getElementById('searchResults').classList.add('hidden')">✕</button>
+            </div>
+            <div id="searchResults" class="search-results hidden"></div>
+            </div>
+
+            <!-- Favorites Button -->
+<button class="favorites-btn" onclick="showFavorites()">
+    ❤️ รายการโปรด
+    <span id="favoritesCount" class="cart-badge">0</span>
+</button>
+
+
+            <div class="nav-actions">
+                <button class="btn-cart" onclick="showCart()">
+                    <span>🛒</span>
+                    <span id="cartCount" class="cart-badge">0</span>
+                </button>
+                
+                <!-- Login Button (shown when not logged in) -->
+                <button id="loginBtn" class="btn-login" onclick="showLogin()">
+                    <span class="login-icon">👤</span>
+                    <span>เข้าสู่ระบบ</span>
+                </button>
+                
+                <!-- User Profile Dropdown (shown when logged in) -->
+                <div id="userProfileDropdown" class="profile-dropdown hidden">
+                    <button class="profile-btn" onclick="toggleProfileMenu()">
+                        <img id="userAvatar" class="user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Avatar">
+                        <span id="userDisplayName" class="user-name">ผู้ใช้</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    
+                    <div id="profileMenu" class="profile-menu">
+                        <div class="profile-menu-header">
+                            <img id="menuAvatar" class="menu-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Avatar">
+                            <div class="menu-user-info">
+                                <div id="menuUserName" class="menu-name">ผู้ใช้</div>
+                                <div id="menuUserEmail" class="menu-email">user@email.com</div>
+                            </div>
+                        </div>
+                        <div class="profile-menu-divider"></div>
+                        <button class="profile-menu-item" onclick="showOrderHistory()">
+                            <span class="menu-icon">📋</span>
+                            <span>ประวัติการสั่งซื้อ</span>
+                        </button>
+                        <button class="profile-menu-item" onclick="showProfile()">
+                            <span class="menu-icon">👤</span>
+                            <span>โปรไฟล์</span>
+                        </button>
+                        <div class="profile-menu-divider"></div>
+                        <button class="profile-menu-item logout-item" onclick="logout()">
+                            <span class="menu-icon">🚪</span>
+                            <span>ออกจากระบบ</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-icon">🎉</span>
+                    <span>ส่งฟรี! สำหรับออเดอร์แรก</span>
+                </div>
+                <h1 class="hero-title">
+                    ยินดีต้อนรับสู่ <span class="highlight">FreshSip</span>
+                </h1>
+                <p class="hero-subtitle">
+                    ร้านน้ำและของว่างออนไลน์ที่ดีที่สุด<br>
+                    พร้อมส่งความสดชื่นถึงมือคุณภายใน 30 นาที
+                </p>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>วัตถุดิบคุณภาพพรีเมียม</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>ส่งไว ภายใน 30 นาที</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>ราคาดี มีโปรโมชั่นทุกวัน</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn-primary-large" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">
+                        🛍️ เริ่มสั่งซื้อเลย
+                    </button>
+                    <button class="btn-secondary-large" onclick="document.getElementById('promotions').scrollIntoView({behavior: 'smooth'})">
+                        🎁 ดูโปรโมชั่น
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-box">
+                        <div class="stat-value">10K+</div>
+                        <div class="stat-label">ลูกค้าพึงพอใจ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">4.9⭐</div>
+                        <div class="stat-label">คะแนนรีวิว</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">30 นาที</div>
+                        <div class="stat-label">เวลาจัดส่ง</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card card-1">
+                    <div class="card-emoji">�</div>
+                    <div class="card-text">น้ำปั่นสดใหม่</div>
+                    <div class="card-price">เริ่มต้น 40฿</div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-emoji">🍗</div>
+                    <div class="card-text">ของว่างอร่อย</div>
+                    <div class="card-price">เริ่มต้น 25฿</div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-emoji">🥤</div>
+                    <div class="card-text">เครื่องดื่มหลากหลาย</div>
+                    <div class="card-price">เริ่มต้น 10฿</div>
+                </div>
+                <div class="hero-circle circle-1"></div>
+                <div class="hero-circle circle-2"></div>
+                <div class="hero-circle circle-3"></div>
+            </div>
+        </div>
+        
+        <!-- Popular Items Preview -->
+        <div class="popular-preview">
+            <div class="popular-header">
+                <h3>🔥 สินค้ายอดนิยม</h3>
+                <a href="#products" class="view-all-link">ดูทั้งหมด →</a>
+            </div>
+            <div class="popular-grid">
+                <div class="popular-item">
+                    <div class="popular-emoji">🍓</div>
+                    <div class="popular-name">สตรอว์เบอร์รี่ปั่น</div>
+                    <div class="popular-price">45฿</div>
+                </div>
+                <div class="popular-item">
+                    <div class="popular-emoji">🥭</div>
+                    <div class="popular-name">มะม่วงปั่น</div>
+                    <div class="popular-price">50฿</div>
+                </div>
+                <div class="popular-item">
+                    <div class="popular-emoji">🍗</div>
+                    <div class="popular-name">ปีกไก่ทอด</div>
+                    <div class="popular-price">40฿</div>
+                </div>
+                <div class="popular-item">
+                    <div class="popular-emoji">🍢</div>
+                    <div class="popular-name">ลูกชิ้นปิ้ง</div>
+                    <div class="popular-price">30฿</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Promotions Section -->
+    <section id="promotions" class="promotions-section">
+        <div class="promotions-container">
+            <div class="section-header">
+                <h2 class="section-title">🎉 โปรโมชั่นพิเศษ</h2>
+                <p class="section-subtitle">ข้อเสนอสุดพิเศษสำหรับคุณ</p>
+            </div>
+            <div class="promotions-grid">
+                <div class="promo-card promo-featured">
+                    <div class="promo-badge">HOT!</div>
+                    <div class="promo-icon">🔥</div>
+                    <h3>ซื้อ 2 แถม 1</h3>
+                    <p>ซื้อน้ำปั่น 2 แก้ว แถมฟรี 1 แก้ว</p>
+                    <div class="promo-validity">ถึง 31 ม.ค. 2026</div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">💰</div>
+                    <h3>ลด 20%</h3>
+                    <p>สมาชิกใหม่ลดทันที 20%</p>
+                    <div class="promo-validity">สมาชิกใหม่</div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">🎁</div>
+                    <h3>ของแถมฟรี</h3>
+                    <p>ซื้อครบ 200 บาท รับของแถม</p>
+                    <div class="promo-validity">ทุกวัน</div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">⚡</div>
+                    <h3>Flash Sale</h3>
+                    <p>ลดสูงสุด 50% ทุกวันศุกร์</p>
+                    <div class="promo-validity">ทุกศุกร์ 12:00-14:00</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-container">
+            <div class="section-header">
+                <h2 class="section-title">เกี่ยวกับเรา</h2>
+                <p class="section-subtitle">ทำไมต้องเลือก FreshSip</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">🌟</div>
+                    <h3>คุณภาพเยี่ยม</h3>
+                    <p>คัดสรรวัตถุดิบคุณภาพดีที่สุด สดใหม่ทุกวัน</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">⚡</div>
+                    <h3>จัดส่งรวดเร็ว</h3>
+                    <p>ส่งถึงมือคุณภายใน 30 นาที รับประกันความสด</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">💯</div>
+                    <h3>ราคาเป็นธรรม</h3>
+                    <p>ราคาดี คุ้มค่า มีโปรโมชั่นพิเศษตลอด</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🎯</div>
+                    <h3>บริการดีเยี่ยม</h3>
+                    <p>ทีมงานพร้อมให้บริการ 24/7 ดูแลทุกความต้องการ</p>
+                </div>
+            </div>
+            <div class="about-stats">
+                <div class="stat-item">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">ลูกค้าพึงพอใจ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">เมนูให้เลือก</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5 ⭐</div>
+                    <div class="stat-label">รีวิวเฉลี่ย</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30 นาที</div>
+                    <div class="stat-label">เวลาจัดส่ง</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <div class="section-header">
+                <h2 class="section-title">ติดต่อเรา</h2>
+                <p class="section-subtitle">พร้อมให้บริการตลอด 24 ชั่วโมง</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">📱</div>
+                    <h3>โทรศัพท์</h3>
+                    <a href="tel:021234567">02-123-4567</a>
+                    <a href="tel:0812345678">081-234-5678</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <h3>อีเมล</h3>
+                    <a href="mailto:info@freshsip.com">info@freshsip.com</a>
+                    <a href="mailto:support@freshsip.com">support@freshsip.com</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <h3>ที่อยู่</h3>
+                    <p>123 ถนนสุขุมวิท<br>กรุงเทพมหานคร 10110</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">💬</div>
+                    <h3>Social Media</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Facebook</a>
+                        <a href="#" class="social-link">Instagram</a>
+                        <a href="#" class="social-link">Line</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Products Section -->
+    <section id="products" class="products-wrapper">
+        <div class="section-header">
+            <h2 class="section-title">สินค้าแนะนำ</h2>
+            <p class="section-subtitle">เลือกซื้อสินค้าคุณภาพจากเรา</p>
+        </div>
+        <!-- Flash Sale Section -->
+<div id="flashSalesContainer"></div>
+
+        <div id="productsSection">
+            <!-- น้ำทั่วไป -->
+            <div class="products-section">
+                <div class="category-header">
+                    <span class="category-icon">🥤</span>
+                    <h3 class="category-title">น้ำทั่วไป</h3>
+                </div>
+                <div class="products-grid" id="beveragesGrid"></div>
+            </div>
+
+            <!-- น้ำปั่น -->
+            <div class="products-section">
+                <div class="category-header">
+                    <span class="category-icon">�</span>
+                    <h3 class="category-title">น้ำปั่น</h3>
+                </div>
+                <div class="products-grid" id="smoothiesGrid"></div>
+            </div>
+
+            <!-- ของกินรองท้อง -->
+            <div class="products-section">
+                <div class="category-header">
+                    <span class="category-icon">🍢</span>
+                    <h3 class="category-title">ของกินรองท้อง</h3>
+                </div>
+                <div class="products-grid" id="snacksGrid"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section id="cartSection" class="cart-wrapper hidden">
+        <div class="cart-container">
+            <div class="cart-header">
+                <h2 class="cart-title">🛒 ตระกร้าสินค้า</h2>
+                <button class="btn-back" onclick="backToShop()">← กลับไปเลือกซื้อ</button>
+            </div>
+            <div id="successMessage" class="success-message hidden"></div>
+            <div id="cartItems"></div>
+            <div id="cartTotal" class="hidden">
+                <div class="cart-total">
+                    <div class="total-label">ยอดรวมทั้งหมด</div>
+                    <div class="total-amount" id="totalAmount">0 บาท</div>
+                    <button type="button" class="checkout-btn" onclick="if(!currentUser){showNotification('กรุณาเข้าสู่ระบบก่อน','error');showLogin();}else if(!cart||cart.length===0){showNotification('ตระกร้าว่าง','error');}else{localStorage.setItem('checkoutCart',JSON.stringify(cart));window.location.href='checkout.html';}">
+                        💳 ไปหน้าชำระเงิน →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-icon">🥤</span>
+                        <span class="logo-text">FreshSip</span>
+                    </div>
+                    <p class="footer-desc">ร้านน้ำและของว่างออนไลน์ที่ดีที่สุด</p>
+                </div>
+                <div class="footer-links">
+                    <h4>ลิงก์ด่วน</h4>
+                    <a href="#products">สินค้า</a>
+                    <a href="#about">เกี่ยวกับเรา</a>
+                    <a href="#contact">ติดต่อเรา</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>ติดต่อเรา</h4>
+                    <p>📧 info@freshsip.com</p>
+                    <p>📱 02-xxx-xxxx</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 FreshSip. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2>เข้าสู่ระบบ</h2>
+                <p>ยินดีต้อนรับกลับมา</p>
+            </div>
+            <form id="loginForm" onsubmit="login(event)">
+                <div class="form-group">
+                    <label>อีเมล</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-modal-primary">เข้าสู่ระบบ</button>
+            </form>
+            <div class="modal-footer">
+                ยังไม่มีบัญชี? <a onclick="showRegister()">สมัครสมาชิก</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2>สมัครสมาชิก</h2>
+                <p>สร้างบัญชีใหม่</p>
+            </div>
+            <form id="registerForm" onsubmit="register(event)">
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล</label>
+                    <input type="text" id="registerName" placeholder="ชื่อของคุณ" required>
+                </div>
+                <div class="form-group">
+                    <label>อีเมล</label>
+                    <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" id="registerPassword" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label>ยืนยันรหัสผ่าน</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-modal-primary">สมัครสมาชิก</button>
+            </form>
+            <div class="modal-footer">
+                มีบัญชีอยู่แล้ว? <a onclick="showLogin()">เข้าสู่ระบบ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History Modal -->
+    <div id="orderHistoryModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2>📋 ประวัติการสั่งซื้อ</h2>
+                <p>รายการคำสั่งซื้อทั้งหมดของคุณ</p>
+            </div>
+            <div id="orderHistoryContent" class="order-history-content">
+                <!-- Order history will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Profile Modal with Settings -->
+<div id="profileModal" class="modal">
+    <div class="modal-content modal-large profile-modal-enhanced">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        
+        <!-- Profile Tabs -->
+        <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="profile" onclick="switchProfileTab('profile')">
+                <span class="profile-tab-icon">👤</span>
+                <span>โปรไฟล์</span>
+            </button>
+            <button class="profile-tab" data-tab="settings" onclick="switchProfileTab('settings')">
+                <span class="profile-tab-icon">⚙️</span>
+                <span>การตั้งค่า</span>
+            </button>
+        </div>
+
+        <!-- Profile Tab Content -->
+        <div id="profileTab" class="tab-content active">
+            <div class="modal-header">
+                <h2>👤 โปรไฟล์ของฉัน</h2>
+                <p>ข้อมูลส่วนตัวและสถิติ</p>
+            </div>
+            
+            <div class="profile-content">
+                <div class="profile-avatar-section">
+                    <img id="profileAvatar" class="profile-avatar-large" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Avatar">
+                    <button class="btn-change-avatar" onclick="changeAvatar()">
+                        🎨 เปลี่ยนรูปโปรไฟล์
+                    </button>
+                </div>
+
+                <!-- Profile Stats -->
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileOrderCountStat">0</div>
+                        <div class="stat-label">คำสั่งซื้อ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileTotalSpentStat">฿0</div>
+                        <div class="stat-label">ยอดรวม</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileMemberDaysStat">0</div>
+                        <div class="stat-label">วัน</div>
+                    </div>
+                </div>
+
+                <!-- Profile Info Grid -->
+                <div class="profile-info-grid">
+                    <div class="profile-info-card">
+                        <div class="profile-info-label">ชื่อ-นามสกุล</div>
+                        <div class="profile-info-value" id="profileName">-</div>
+                    </div>
+                    <div class="profile-info-card">
+                        <div class="profile-info-label">อีเมล</div>
+                        <div class="profile-info-value" id="profileEmail">-</div>
+                    </div>
+                    <div class="profile-info-card">
+                        <div class="profile-info-label">สมาชิกเมื่อ</div>
+                        <div class="profile-info-value" id="profileJoinDate">-</div>
+                    </div>
+                    <div class="profile-info-card">
+                        <div class="profile-info-label">สถานะ</div>
+                        <div class="profile-info-value">
+                            <span style="color: var(--success);">✓ ยืนยันแล้ว</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="settings-actions">
+                    <button class="btn-settings-primary" onclick="exportUserData()">
+                        📥 ส่งออกข้อมูล
+                    </button>
+                    <button class="btn-settings-secondary" onclick="showOrderHistory()">
+                        📋 ประวัติคำสั่งซื้อ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab Content -->
+        <div id="settingsTab" class="tab-content">
+            <div class="modal-header">
+                <h2>⚙️ การตั้งค่า</h2>
+                <p>ปรับแต่งประสบการณ์การใช้งาน</p>
+            </div>
+
+            <!-- Appearance Settings -->
+            <div class="settings-group">
+                <h3 class="settings-group-title">
+                    <span class="settings-group-icon">🎨</span>
+                    <span>รูปแบบการแสดงผล</span>
+                </h3>
+
+                <!-- Theme Selector -->
+                <div class="settings-item" style="display: block;">
+                    <div class="settings-item-info" style="margin-bottom: 20px;">
+                        <div class="settings-item-title">
+                            <span class="settings-item-icon">🌓</span>
+                            <span>ธีมสี</span>
+                        </div>
+                        <div class="settings-item-desc">เลือกธีมที่คุณชอบ</div>
+                    </div>
+                    <div class="theme-selector">
+                        <div class="theme-option" data-theme="light" onclick="changeTheme('light')">
+                            <div class="theme-icon">☀️</div>
+                            <div class="theme-name">กลางวัน</div>
+                            <div class="theme-desc">สว่าง สดใส</div>
+                        </div>
+                        <div class="theme-option active" data-theme="dark" onclick="changeTheme('dark')">
+                            <div class="theme-icon">🌙</div>
+                            <div class="theme-name">กลางคืน</div>
+                            <div class="theme-desc">มืด สบายตา</div>
+                        </div>
+                        <div class="theme-option" data-theme="auto" onclick="changeTheme('auto')">
+                            <div class="theme-icon">🔄</div>
+                            <div class="theme-name">อัตโนมัติ</div>
+                            <div class="theme-desc">ตามระบบ</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Font Size -->
+                <div class="settings-item" style="display: block;">
+                    <div class="settings-item-info" style="margin-bottom: 20px;">
+                        <div class="settings-item-title">
+                            <span class="settings-item-icon">🔤</span>
+                            <span>ขนาดตัวอักษร</span>
+                        </div>
+                        <div class="settings-item-desc">ปรับขนาดให้อ่านง่าย</div>
+                    </div>
+                    <div class="font-size-selector">
+                        <div class="font-size-option" data-size="small" onclick="changeFontSize('small')">
+                            <div class="font-size-preview small">Aa</div>
+                            <div class="font-size-label">เล็ก</div>
+                        </div>
+                        <div class="font-size-option active" data-size="medium" onclick="changeFontSize('medium')">
+                            <div class="font-size-preview medium">Aa</div>
+                            <div class="font-size-label">กลาง</div>
+                        </div>
+                        <div class="font-size-option" data-size="large" onclick="changeFontSize('large')">
+                            <div class="font-size-preview large">Aa</div>
+                            <div class="font-size-label">ใหญ่</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Language Settings -->
+            <div class="settings-group">
+                <h3 class="settings-group-title">
+                    <span class="settings-group-icon">🌍</span>
+                    <span>ภาษา</span>
+                </h3>
+                <div class="language-selector">
+                    <div class="language-option active" data-lang="th" onclick="changeLanguage('th')">
+                        <div class="language-flag">🇹🇭</div>
+                        <div class="language-info">
+                            <div class="language-name">ภาษาไทย</div>
+                            <div class="language-native">Thai</div>
+                        </div>
+                    </div>
+                    <div class="language-option" data-lang="en" onclick="changeLanguage('en')">
+                        <div class="language-flag">🇺🇸</div>
+                        <div class="language-info">
+                            <div class="language-name">English</div>
+                            <div class="language-native">อังกฤษ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="settings-group">
+                <h3 class="settings-group-title">
+                    <span class="settings-group-icon">🎯</span>
+                    <span>ความชอบ</span>
+                </h3>
+
+                <div class="settings-item" onclick="toggleSetting('notifications')">
+                    <div class="settings-item-info">
+                        <div class="settings-item-title">
+                            <span class="settings-item-icon">🔔</span>
+                            <span>การแจ้งเตือน</span>
+                        </div>
+                        <div class="settings-item-desc">รับการแจ้งเตือนคำสั่งซื้อและโปรโมชั่น</div>
+                    </div>
+                    <div id="notificationsToggle" class="toggle-switch active"></div>
+                </div>
+
+                <div class="settings-item" onclick="toggleSetting('soundEffects')">
+                    <div class="settings-item-info">
+                        <div class="settings-item-title">
+                            <span class="settings-item-icon">🔊</span>
+                            <span>เสียงเอฟเฟกต์</span>
+                        </div>
+                        <div class="settings-item-desc">เล่นเสียงเมื่อมีการกระทำ</div>
+                    </div>
+                    <div id="soundEffectsToggle" class="toggle-switch active"></div>
+                </div>
+
+                <div class="settings-item" onclick="toggleSetting('searchHistory')">
+                    <div class="settings-item-info">
+                        <div class="settings-item-title">
+                            <span class="settings-item-icon">🔍</span>
+                            <span>ประวัติการค้นหา</span>
+                        </div>
+                        <div class="settings-item-desc">บันทึกคำค้นหาล่าสุด</div>
+                    </div>
+                    <div id="searchHistoryToggle" class="toggle-switch active"></div>
+                </div>
+            </div>
+
+            <!-- System Settings -->
+            <div class="settings-group">
+                <h3 class="settings-group-title">
+                    <span class="settings-group-icon">🔧</span>
+                    <span>ระบบ</span>
+                </h3>
+
+                <div class="settings-actions">
+                    <button class="btn-settings-secondary" onclick="resetSettings()">
+                        🔄 รีเซ็ตการตั้งค่า
+                    </button>
+                    <button class="btn-settings-secondary" onclick="clearCache()">
+                        🗑️ ล้างแคช
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="danger-zone">
+                <div class="danger-zone-title">
+                    <span>⚠️</span>
+                    <span>โซนอันตราย</span>
+                </div>
+                <div class="danger-zone-desc">
+                    การลบบัญชีจะลบข้อมูลทั้งหมดและไม่สามารถกู้คืนได้
+                </div>
+                <button class="btn-danger" onclick="deleteAccount()">
+                    🗑️ ลบบัญชีถาวร
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Custom Notification -->
+    <div class="notification-overlay" id="notificationOverlay" onclick="closeNotification()"></div>
+    <div class="custom-notification" id="customNotification">
+        <div class="notification-icon" id="notificationIcon"></div>
+        <div class="notification-title" id="notificationTitle"></div>
+        <div class="notification-message" id="notificationMessage"></div>
+        <button class="notification-btn" onclick="closeNotification()">ตกลง</button>
+    </div>
+
+    <!-- Favorites Modal -->
+<div id="favoritesModal" class="modal hidden">
+    <div class="modal-content modal-large">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <div class="modal-header">
+            <h2>❤️ รายการโปรด</h2>
+            <p>สินค้าที่คุณชื่นชอบ</p>
+        </div>
+        <div id="favoritesContent"></div>
+    </div>
+</div>
+
+<!-- Product Detail Modal (with Reviews) -->
+<div id="productDetailModal" class="modal hidden">
+    <div class="modal-content modal-large">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <div id="productDetailContent"></div>
+    </div>
+</div>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/notification.js"></script>
+    <script src="js/settings.js"></script>  
+    <script src="js/app.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/favorites.js"></script>
+    <script src="js/reviews.js"></script>
+    <script src="js/flashsale.js"></script>
+</body>
+</html>

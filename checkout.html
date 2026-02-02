@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระเงิน - FreshSip</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/checkout.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🥤</span>
+                <span class="logo-text">FreshSip</span>
+            </div>
+            <div class="checkout-steps">
+                <div class="step active">
+                    <span class="step-number">1</span>
+                    <span class="step-text">ตรวจสอบ</span>
+                </div>
+                <div class="step-divider">→</div>
+                <div class="step active">
+                    <span class="step-number">2</span>
+                    <span class="step-text">ชำระเงิน</span>
+                </div>
+                <div class="step-divider">→</div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-text">เสร็จสิ้น</span>
+                </div>
+            </div>
+            <button class="btn-back" onclick="goBack()">
+                ← กลับ
+            </button>
+        </div>
+    </nav>
+
+    <div class="checkout-container">
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-header">
+                <h2 class="section-title">📋 สรุปรายการสั่งซื้อ</h2>
+                <div class="summary-badge">🎉 ส่งฟรี!</div>
+            </div>
+            
+            <div id="orderItems" class="order-items"></div>
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-breakdown">
+                <div class="summary-row">
+                    <span>ยอดรวมสินค้า</span>
+                    <span id="subtotal">0 บาท</span>
+                </div>
+                <div class="summary-row">
+                    <span>ค่าจัดส่ง</span>
+                    <span class="text-success">ฟรี ✓</span>
+                </div>
+                <div class="summary-row discount-row">
+                    <span>ส่วนลด</span>
+                    <span class="text-success">-0 บาท</span>
+                </div>
+            </div>
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-total">
+                <div class="total-row">
+                    <span>ยอดรวมทั้งหมด</span>
+                    <span class="total-amount" id="totalAmount">0 บาท</span>
+                </div>
+            </div>
+
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <span>🔒</span>
+                    <span>ปลอดภัย 100%</span>
+                </div>
+                <div class="trust-badge">
+                    <span>✓</span>
+                    <span>รับประกันคุณภาพ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="payment-section">
+            <div class="payment-header">
+                <h2 class="section-title">💳 เลือกวิธีชำระเงิน</h2>
+                <p class="payment-subtitle">เลือกช่องทางที่สะดวกสำหรับคุณ</p>
+            </div>
+            
+            <!-- Payment Method Cards -->
+            <div class="payment-methods">
+                <div class="payment-method active" onclick="selectPaymentMethod('card')" data-method="card">
+                    <div class="method-icon-wrapper">
+                        <div class="method-icon">💳</div>
+                    </div>
+                    <div class="method-info">
+                        <div class="method-title">บัตรเครดิต/เดบิต</div>
+                        <div class="method-desc">Visa, Mastercard, JCB</div>
+                    </div>
+                    <div class="method-check">✓</div>
+                </div>
+                
+                <div class="payment-method" onclick="selectPaymentMethod('qr')" data-method="qr">
+                    <div class="method-icon-wrapper">
+                        <div class="method-icon">📱</div>
+                    </div>
+                    <div class="method-info">
+                        <div class="method-title">QR Code</div>
+                        <div class="method-desc">PromptPay, Thai QR</div>
+                        <div class="method-recommended">⚡ รวดเร็ว</div>
+                    </div>
+                    <div class="method-check">✓</div>
+                </div>
+                
+                <div class="payment-method" onclick="selectPaymentMethod('bank')" data-method="bank">
+                    <div class="method-icon-wrapper">
+                        <div class="method-icon">🏦</div>
+                    </div>
+                    <div class="method-info">
+                        <div class="method-title">โอนผ่านธนาคาร</div>
+                        <div class="method-desc">ธนาคารทุกธนาคาร</div>
+                        <div class="method-popular">🔥 นิยมสูงสุด</div>
+                    </div>
+                    <div class="method-check">✓</div>
+                </div>
+                
+                <div class="payment-method" onclick="selectPaymentMethod('cod')" data-method="cod">
+                    <div class="method-icon-wrapper">
+                        <div class="method-icon">💵</div>
+                    </div>
+                    <div class="method-info">
+                        <div class="method-title">เก็บเงินปลายทาง</div>
+                        <div class="method-desc">ชำระเมื่อได้รับสินค้า</div>
+                    </div>
+                    <div class="method-check">✓</div>
+                </div>
+            </div>
+
+            <!-- Card Payment Form -->
+            <div id="cardPaymentForm" class="payment-form">
+                <div class="form-header">
+                    <h3 class="form-title">ข้อมูลบัตร</h3>
+                    <div class="card-logos">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%231434CB' width='40' height='25' rx='3'/%3E%3Ctext x='20' y='17' font-family='Arial' font-size='10' fill='white' text-anchor='middle' font-weight='bold'%3EVISA%3C/text%3E%3C/svg%3E" alt="Visa">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23EB001B' width='15' height='25' rx='3'/%3E%3Crect fill='%23F79E1B' x='10' width='15' height='25'/%3E%3Crect fill='%23FF5F00' x='25' width='15' height='25' rx='3'/%3E%3C/svg%3E" alt="Mastercard">
+                    </div>
+                </div>
+                <form id="cardForm" onsubmit="processCardPayment(event)">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">👤</span>
+                            ชื่อบนบัตร
+                        </label>
+                        <input type="text" id="cardName" placeholder="JOHN DOE" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">💳</span>
+                            หมายเลขบัตร
+                        </label>
+                        <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <span class="label-icon">📅</span>
+                                วันหมดอายุ
+                            </label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <span class="label-icon">🔒</span>
+                                CVV
+                            </label>
+                            <input type="text" id="cardCVV" maxlength="3" placeholder="123" required>
+                        </div>
+                    </div>
+                    <div class="security-notice">
+                        <span class="security-icon">🔐</span>
+                        <span>การชำระเงินของคุณปลอดภัยด้วยการเข้ารหัส SSL 256-bit</span>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <span>ยืนยันการชำระเงิน</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- QR Payment Form -->
+            <div id="qrPaymentForm" class="payment-form hidden">
+                <div class="form-header">
+                    <h3 class="form-title">สแกน QR Code</h3>
+                    <p class="form-subtitle">ใช้แอปธนาคารของคุณสแกน QR Code</p>
+                </div>
+                <div class="qr-container">
+                    <div class="qr-card">
+                        <div class="qr-card-header">
+                            <div class="promptpay-logo">
+                                <span class="logo-icon">💳</span>
+                                <span class="logo-text">PromptPay</span>
+                            </div>
+                            <div class="merchant-name">FreshSip Shop</div>
+                        </div>
+                        
+                        <div class="qr-display">
+                            <div class="qr-wrapper">
+                                <canvas id="qrCodeCanvas"></canvas>
+                                <div class="qr-corners">
+                                    <div class="corner top-left"></div>
+                                    <div class="corner top-right"></div>
+                                    <div class="corner bottom-left"></div>
+                                    <div class="corner bottom-right"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="qr-amount-display">
+                            <div class="amount-label">ยอดที่ต้องชำระ</div>
+                            <div class="qr-amount" id="qrAmount">฿0.00</div>
+                        </div>
+
+                        <div class="qr-timer-box">
+                            <div class="timer-icon">⏱️</div>
+                            <div class="timer-text">
+                                <span>หมดอายุใน</span>
+                                <strong id="qrTimer">10:00</strong>
+                            </div>
+                            <button class="btn-refresh" onclick="refreshQRCode()">
+                                <span>🔄</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="qr-steps">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">เปิดแอพธนาคาร</div>
+                                <div class="step-desc">เลือกฟังก์ชันสแกน QR</div>
+                            </div>
+                        </div>
+                        <div class="step-arrow">→</div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">สแกน QR Code</div>
+                                <div class="step-desc">จ่ออุปกรณ์กับหน้าจอ</div>
+                            </div>
+                        </div>
+                        <div class="step-arrow">→</div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">ยืนยันชำระเงิน</div>
+                                <div class="step-desc">ตรวจสอบและยืนยัน</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-submit" onclick="verifyQRPayment()">
+                        <span>✓ ฉันชำระเงินแล้ว</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bank Transfer Form -->
+            <div id="bankPaymentForm" class="payment-form hidden">
+                <div class="form-header">
+                    <h3 class="form-title">โอนเงินผ่านธนาคาร</h3>
+                    <p class="form-subtitle">โอนเงินเข้าบัญชีด้านล่าง</p>
+                </div>
+                
+                <div class="bank-account-card">
+                    <div class="bank-header">
+                        <div class="bank-logo">🏦</div>
+                        <div class="bank-info">
+                            <div class="bank-name">ธนาคารกสิกรไทย</div>
+                            <div class="bank-branch">สาขาสีลม</div>
+                        </div>
+                    </div>
+                    <div class="account-details">
+                        <div class="detail-row">
+                            <span class="detail-label">เลขที่บัญชี</span>
+                            <div class="detail-value">
+                                <span class="account-number">123-4-56789-0</span>
+                                <button class="btn-copy" onclick="copyAccountNumber()">📋</button>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">ชื่อบัญชี</span>
+                            <span class="detail-value">บริษัท เฟรชซิป จำกัด</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">ยอดที่ต้องโอน</span>
+                            <span class="detail-value amount-highlight" id="bankAmount">0 บาท</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <div class="upload-header">
+                        <h4>อัพโหลดหลักฐานการโอนเงิน</h4>
+                        <p>กรุณาอัพโหลดภาพหน้าจอ slip การโอนเงิน</p>
+                    </div>
+                    <label class="upload-zone">
+                        <input type="file" id="slipUpload" accept="image/*" onchange="handleSlipUpload(event)">
+                        <div class="upload-box">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">
+                                <strong>คลิกเพื่ออัพโหลด</strong>
+                                <span>หรือลากไฟล์มาวางที่นี่</span>
+                            </div>
+                            <div class="upload-hint">รองรับไฟล์ JPG, PNG (สูงสุด 5MB)</div>
+                        </div>
+                    </label>
+                    <div id="slipPreview" class="slip-preview hidden"></div>
+                </div>
+
+                <button class="btn-submit" onclick="submitBankTransfer()">
+                    <span>ส่งหลักฐานการโอนเงิน</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </div>
+
+            <!-- COD Form -->
+            <div id="codPaymentForm" class="payment-form hidden">
+                <div class="form-header">
+                    <h3 class="form-title">เก็บเงินปลายทาง (COD)</h3>
+                    <p class="form-subtitle">ชำระเงินเมื่อได้รับสินค้า</p>
+                </div>
+                
+                <div class="cod-info-cards">
+                    <div class="info-card">
+                        <div class="info-icon">💰</div>
+                        <div class="info-content">
+                            <h4>วิธีชำระเงิน</h4>
+                            <ul>
+                                <li>เตรียมเงินสดจำนวนที่ถูกต้อง</li>
+                                <li>ชำระให้กับพนักงานส่งสินค้า</li>
+                                <li>ตรวจสอบสินค้าก่อนชำระเงิน</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">📦</div>
+                        <div class="info-content">
+                            <h4>ข้อควรทราบ</h4>
+                            <ul>
+                                <li>ตรวจสอบสภาพสินค้าก่อนรับ</li>
+                                <li>เก็บใบเสร็จไว้เป็นหลักฐาน</li>
+                                <li>ติดต่อเราหากมีปัญหา</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cod-amount-card">
+                    <div class="cod-amount-wrapper">
+                        <div class="cod-icon">💵</div>
+                        <div class="cod-details">
+                            <div class="cod-label">ยอดที่ต้องชำระ</div>
+                            <div class="cod-value" id="codAmount">0 บาท</div>
+                            <div class="cod-note">*กรุณาเตรียมเงินสดพอดี</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="confirmCOD()">
+                    <span>ยืนยันคำสั่งซื้อ</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content success-modal">
+            <div class="success-animation">
+                <div class="success-icon">✓</div>
+                <div class="success-circle"></div>
+            </div>
+            <h2 class="success-title">ชำระเงินสำเร็จ!</h2>
+            <p class="success-message">ขอบคุณที่ใช้บริการ FreshSip</p>
+            <div class="order-info">
+                <div class="order-number-box">
+                    <span class="order-label">หมายเลขคำสั่งซื้อ</span>
+                    <strong class="order-number" id="orderNumber"></strong>
+                </div>
+                <div class="order-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">📧</span>
+                        <span>ส่งข้อมูลไปที่อีเมลแล้ว</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🚚</span>
+                        <span>จัดส่งภายใน 30 นาที</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary-success" onclick="returnToHome()">
+                <span>กลับหน้าหลัก</span>
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/checkout.js"></script>
+
+    <script>
+        // Copy account number function
+        function copyAccountNumber() {
+            const accountNumber = '123-4-56789-0';
+            navigator.clipboard.writeText(accountNumber).then(() => {
+                const btn = event.target.closest('.btn-copy');
+                const originalText = btn.textContent;
+                btn.textContent = '✓';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Refresh QR Code
+        function refreshQRCode() {
+            generateQRCode();
+            startQRTimer();
+        }
+    </script>
+</body>
+</html>
