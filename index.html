@@ -75,7 +75,14 @@
 </button>
 
 
-            <div class="nav-actions">
+           <div class="nav-actions">
+                <!-- Admin Button -->
+                <button class="btn-admin" onclick="window.location.href='admin.html'" title="Admin Panel">
+                    <span>⚙️</span>
+                    <span>Admin</span>
+                </button>
+                
+                <!-- ปุ่มอื่นๆ ตามเดิม -->
                 <button class="btn-cart" onclick="showCart()">
                     <span>🛒</span>
                     <span id="cartCount" class="cart-badge">0</span>
@@ -794,6 +801,21 @@
         <div id="productDetailContent"></div>
     </div>
 </div>
+
+<script>
+        // Check admin authentication before loading panel
+        if (!checkAdminAccess()) {
+            // Login page will be shown
+        } else {
+            // Update admin name display
+            document.addEventListener('DOMContentLoaded', function() {
+                const nameEl = document.getElementById('adminDisplayName');
+                if (nameEl && adminUser) {
+                    nameEl.textContent = adminUser.name;
+                }
+            });
+        }
+    </script>
 
     <!-- JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
